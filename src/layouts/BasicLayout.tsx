@@ -20,6 +20,11 @@ import { ConnectState, Dispatch } from '@/models/connect';
 import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 
+import { Icon, Layout } from 'antd';
+import GlobalFooter from '@ant-design/pro-layout/lib/GlobalFooter';
+
+const { Footer } = Layout;
+
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
@@ -45,9 +50,38 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
 
+  const defaultLinks = [
+    {
+      key: 'leeruigan',
+      title: '个人博客地址',
+      href: 'http://120.77.239.216/',
+      blankTarget: true,
+    },
+    // {
+    //   key: 'Ant Design',
+    //   title: 'Ant Design',
+    //   href: 'https://ant.design',
+    //   blankTarget: true,
+    // },
+  ];
+  
+  const defaultCopyright = '后台管理系统';
 const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
   if (!isAntDesignPro()) {
-    return defaultDom;
+    return (
+      <>
+        <Footer style={{ padding: 0 }}>
+          <GlobalFooter
+            links={defaultLinks}
+            copyright={
+              <>
+                Copyright <Icon type="copyright" /> {defaultCopyright}
+              </>
+            }
+          />
+        </Footer>
+      </>
+    );
   }
   return (
     <>
