@@ -8,6 +8,7 @@ import ProLayout, {
   MenuDataItem,
   BasicLayoutProps as ProLayoutProps,
   Settings,
+  DefaultFooter
 } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
@@ -70,16 +71,7 @@ const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
   if (!isAntDesignPro()) {
     return (
       <>
-        <Footer style={{ padding: 0 }}>
-          <GlobalFooter
-            links={defaultLinks}
-            copyright={
-              <>
-                Copyright <Icon type="copyright" /> {defaultCopyright}
-              </>
-            }
-          />
-        </Footer>
+        <DefaultFooter links={defaultLinks} copyright={defaultCopyright} />
       </>
     );
   }
