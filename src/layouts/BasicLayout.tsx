@@ -21,10 +21,6 @@ import { ConnectState, Dispatch } from '@/models/connect';
 import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 
-import { Icon, Layout } from 'antd';
-import GlobalFooter from '@ant-design/pro-layout/lib/GlobalFooter';
-
-const { Footer } = Layout;
 
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
@@ -157,6 +153,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       rightContentRender={rightProps => <RightContent {...rightProps} />}
       {...props}
       {...settings}
+      title="后台管理系统"
     >
       {children}
     </ProLayout>
