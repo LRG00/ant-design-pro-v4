@@ -112,6 +112,18 @@ export default {
           component: './role/index',
         },
         {
+          name: '用户管理',
+          icon: 'user-add',
+          path: '/sysUser/list',
+          component: './sysUser/index',
+        },
+        {
+          name: '菜单管理',
+          icon: 'menu',
+          path: '/menu/list',
+          component: './menu/index',
+        },
+        {
           component: './404',
         },
       ],
