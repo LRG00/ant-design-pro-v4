@@ -58,7 +58,6 @@ const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
       </>
     );
   }
-
   return (
     <>
       {defaultDom}
@@ -115,7 +114,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         if (menuItemProps.isUrl) {
           return defaultDom;
         }
-
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
