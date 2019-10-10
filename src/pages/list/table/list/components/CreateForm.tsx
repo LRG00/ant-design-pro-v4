@@ -16,7 +16,6 @@ const CreateForm: React.FC<CreateFormProps> = props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      console.log(fieldsValue);
       handleAdd(fieldsValue);
     });
   };

@@ -409,7 +409,6 @@ class TableList extends Component<TableListProps, TableListState> {
       listTableList: { data },
       loading,
     } = this.props;
-    console.log(this.props);
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>

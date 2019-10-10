@@ -106,6 +106,12 @@ export default {
           component: './list/table/list',
         },
         {
+          name: '角色管理',
+          icon: 'deployment-unit',
+          path: '/role/list',
+          component: './role/index',
+        },
+        {
           component: './404',
         },
       ],
