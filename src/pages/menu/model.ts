@@ -1,6 +1,6 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
-import { queryMenu } from './service';
+import { queryMenu, addMenu, updateMenu, deleteMenu } from './service';
 
 import { menuListData } from './data.d';
 
@@ -18,9 +18,9 @@ export interface ModelType {
   state: StateType;
   effects: {
     fetch: Effect;
-    // add: Effect;
-    // remove: Effect;
-    // update: Effect;
+    add: Effect;
+    remove: Effect;
+    update: Effect;
   };
   reducers: {
     save: Reducer<StateType>;
@@ -38,35 +38,37 @@ const Model: ModelType = {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
+      console.log('-----')
       const response = yield call(queryMenu, payload);
       yield put({
         type: 'save',
         payload: response,
       });
+      if (callback) callback(response);
     },
-    // *add({ payload, callback }, { call, put }) {
-    //   const response = yield call(addArtile, payload);
-    //   yield put({
-    //     type: 'fetch',
-    //   });
-    //   if (callback) callback(response);
-    // },
-    // *remove({ payload, callback }, { call, put }) {
-    //   const response = yield call(removeArtile, payload);
-    //   yield put({
-    //     type: 'fetch',
-    //   });
-    //   if (callback) callback(response);
-    // },
-    // *update({ payload, callback }, { call, put }) {
-    //   const response = yield call(updateRule, payload);
-    //   yield put({
-    //     type: 'save',
-    //     payload: response,
-    //   });
-    //   if (callback) callback();
-    // },
+    *add({ payload, callback }, { call, put }) {
+      const response = yield call(addMenu, payload);
+      yield put({
+        type: 'fetch',
+      });
+      if (callback) callback(response);
+    },
+    *remove({ payload, callback }, { call, put }) {
+      const response = yield call(deleteMenu, payload);
+      yield put({
+        type: 'fetch',
+      });
+      if (callback) callback(response);
+    },
+    *update({ payload, callback }, { call, put }) {
+      const response = yield call(updateMenu, payload);
+      yield put({
+        type: 'fetch',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
   },
 
   reducers: {

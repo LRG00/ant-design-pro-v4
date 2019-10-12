@@ -9,7 +9,7 @@ import ProLayout, {
   Settings,
   DefaultFooter,
 } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import Authorized from '@/utils/Authorized';
@@ -17,6 +17,8 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState, Dispatch } from '@/models/connect';
 import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+import request from '@/utils/request';
+import { arrayToJson } from '@/utils/index'
 
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
@@ -36,6 +38,7 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 
 const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
   menuList.map(item => {
+    console.log(menuList)
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
@@ -78,14 +81,19 @@ const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
     </>
   );
 };
-
+// let menuData1 = []
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
+  const [ MenuData, setMenuData ] = useState([])
   const { dispatch, children, settings } = props;
   /**
    * constructor
    */
 
   useEffect(() => {
+    
+    dispatch({
+      type: 'menu/fetch',
+    });
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
@@ -93,19 +101,27 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       dispatch({
         type: 'settings/getSetting',
       });
+      request('/api/menu')
+      .then(data => {
+        const xxx = arrayToJson(JSON.parse(JSON.stringify(data.list)))
+        console.log(xxx)
+        // setMenuData(xxx || []);
+      });
     }
   }, []);
   /**
    * init variables
    */
-
   const handleMenuCollapse = (payload: boolean): void =>
     dispatch &&
     dispatch({
       type: 'global/changeLayoutCollapsed',
       payload,
     });
-
+  // const getmenuData = async () => {
+  //   const xxx = await request('/api/menu')
+  //   return arrayToJson(JSON.parse(JSON.stringify(xxx.list))) ;
+  // }
   return (
     <ProLayout
       logo={logo}

@@ -106,22 +106,29 @@ export default {
           component: './list/table/list',
         },
         {
-          name: '角色管理',
-          icon: 'deployment-unit',
-          path: '/role/list',
-          component: './role/index',
-        },
-        {
-          name: '用户管理',
-          icon: 'user-add',
-          path: '/sysUser/list',
-          component: './sysUser/index',
-        },
-        {
-          name: '菜单管理',
-          icon: 'menu',
-          path: '/menu/list',
-          component: './menu/index',
+          name: '系统管理',
+          icon: 'box-plot',
+          path: '/sys',
+          routes: [
+            {
+              name: '角色管理',
+              icon: 'deployment-unit',
+              path: '/sys/role',
+              component: './role/index',
+            },
+            {
+              name: '用户管理',
+              icon: 'user-add',
+              path: '/sys/user',
+              component: './sysUser/index',
+            },
+            {
+              name: '菜单管理',
+              icon: 'menu',
+              path: '/sys/menu',
+              component: './menu/index',
+            },
+          ]
         },
         {
           component: './404',

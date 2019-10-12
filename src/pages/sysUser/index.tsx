@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'dva';
 import { StateType } from './model';
 import { FormComponentProps } from 'antd/es/form';
-import { Table, Form, Card, Tag } from 'antd';
+import { Table, Form, Card, Tag, Badge } from 'antd';
 
 interface TableListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
@@ -51,9 +51,9 @@ class Role extends Component<TableListProps, TableListState> {
       dataIndex: 'status',
       render(val: boolean) {
         if (val) {
-          return (<Tag color="#87d068">启用</Tag>)
+          return (<Badge status='success' text='启用' />)
         } else {
-          return (<Tag color="#f50">禁用</Tag>)
+          return (<Badge status='error' text='禁用' />)
         }
       },
     },
