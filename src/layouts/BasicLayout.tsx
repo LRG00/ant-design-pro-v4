@@ -103,8 +103,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       });
       request('/api/menu')
       .then(data => {
-        const xxx = arrayToJson(JSON.parse(JSON.stringify(data.list)))
-        console.log(xxx)
+        // const xxx = arrayToJson(JSON.parse(JSON.stringify(data.list)))
+        // console.log(xxx)
         // setMenuData(xxx || []);
       });
     }

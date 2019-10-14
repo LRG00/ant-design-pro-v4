@@ -106,6 +106,12 @@ export default {
           component: './list/table/list',
         },
         {
+          name: '音乐管理',
+          icon: 'sound',
+          path: '/music/list',
+          component: './music/index',
+        },
+        {
           name: '系统管理',
           icon: 'box-plot',
           path: '/sys',
