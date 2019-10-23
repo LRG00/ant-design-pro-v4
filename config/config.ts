@@ -112,6 +112,12 @@ export default {
           component: './music/index',
         },
         {
+          name: 'css示例管理',
+          icon: 'edit',
+          path: '/editcode/list',
+          component: './editcode/index',
+        },
+        {
           name: '系统管理',
           icon: 'box-plot',
           path: '/sys',
