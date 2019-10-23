@@ -6,70 +6,50 @@ import moment from 'moment';
 import { StateType } from './model';
 import CreateForm from './components/CreateForm';
 import { FormComponentProps } from 'antd/es/form';
-import { Table, Form, Card, Button, message, Tag, Divider } from 'antd';
+import { Table, Form, Card, Button, message, Divider } from 'antd';
 
 interface TableListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
-  menu: StateType;
+  music: StateType;
 }
 
 interface TableListState {
   modalVisible: boolean;
   record: any;
 }
-@connect(
-  ({
-    menu, // 必须是model 的 namespace: 'menu',
-  }: {
-    menu: StateType;
-  }) => ({
-    menu,
-  }),
-)
-class Menu extends Component<TableListProps, TableListState> {
-
+@connect(({ music }: { music: StateType }) => ({
+  // 必须是model 的 namespace: 'music',
+  music,
+}))
+class music extends Component<TableListProps, TableListState> {
   state: TableListState = {
     modalVisible: false,
-    record: {}
+    record: {},
   };
   columns: object[] = [
     // {
     //   title: 'ID',
-    //   dataIndex: 'menuId',
+    //   dataIndex: 'musicId',
     // },
     {
-      title: '角色名称',
+      title: '音乐名称',
       dataIndex: 'name',
     },
     {
-      title: '上级菜单',
-      dataIndex: 'parentName',
-      render: (val: string) => <span>{ val === '' ? '无' : val }</span>,
+      title: '创作者',
+      dataIndex: 'author',
     },
     {
-      title: '图标',
-      dataIndex: 'icon',
+      title: '音乐路径',
+      dataIndex: 'url',
+    },
+    {
+      title: '大小',
+      dataIndex: 'size',
     },
     {
       title: '类型',
-      dataIndex: 'type',
-      render(val: string) {
-        if (val === 'a') {
-          return (<Tag color="#108ee9">目录</Tag>)
-        } else if (val === 'b'){
-          return (<Tag color="#87d068">菜单</Tag>)
-        } else {
-          return (<Tag color="#f50">按钮</Tag>)
-        }
-      },
-    },
-    {
-      title: '菜单路径',
-      dataIndex: 'path',
-    },
-    {
-      title: '授权标识',
-      dataIndex: 'perms',
+      dataIndex: 'mimetype',
     },
     {
       title: '创建时间',
@@ -83,7 +63,7 @@ class Menu extends Component<TableListProps, TableListState> {
         <Fragment>
           <a onClick={() => this.handleModalVisible(true, record)}>修改</a>
           <Divider type="vertical" />
-          <a onClick={() => this.removeMenu(record)}>删除</a>
+          <a onClick={() => this.removemusic(record)}>删除</a>
         </Fragment>
       ),
     },
@@ -92,39 +72,39 @@ class Menu extends Component<TableListProps, TableListState> {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'menu/fetch',
+      type: 'music/fetch',
     });
   }
   handleModalVisible = (flag?: boolean, record?: any) => {
     this.setState({
       modalVisible: !!flag,
-      record
+      record,
     });
   };
 
-  removeMenu = (record: any) => {
+  removemusic = (record: any) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'menu/remove',
+      type: 'music/remove',
       payload: { ...record },
       callback: (res: any) => {
         if (res.status !== 500) {
           message.success('删除成功');
         }
       },
-    }); 
-  }
+    });
+  };
 
   handleAdd = (fields: any) => {
-    console.log(fields, 'fields')
-    const type = fields.menuId ? 'menu/update' : 'menu/add'
+    console.log(fields, 'fields');
+    const type = fields.musicId ? 'music/update' : 'music/add';
     const { dispatch } = this.props;
     dispatch({
       type,
       payload: { ...fields },
       callback: (res: any) => {
         if (res.status !== 500) {
-          message.success(fields.menuId ? '修改成功' : '添加成功');
+          message.success(fields.musicId ? '修改成功' : '添加成功');
         }
       },
     });
@@ -137,26 +117,35 @@ class Menu extends Component<TableListProps, TableListState> {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
     };
-    const { menu: { data } } = this.props
+    const {
+      music: { data },
+    } = this.props;
     const { modalVisible, record } = this.state;
+    console.log(record, 'l');
     return (
       <PageHeaderWrapper>
         <div>
-        <Card bordered={false}>
-          <Button style={{ marginBottom: '20px' }} icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-            新建
-          </Button>
-          <Table
-            rowKey='musicId'
-            dataSource={data.list} 
-            columns={this.columns}
+          <Card bordered={false}>
+            <Button
+              style={{ marginBottom: '20px' }}
+              icon="plus"
+              type="primary"
+              onClick={() => this.handleModalVisible(true)}
+            >
+              新建
+            </Button>
+            <Table rowKey="musicId" dataSource={data.list} columns={this.columns} />
+          </Card>
+          <CreateForm
+            {...parentMethods}
+            musicList={data.list}
+            modalVisible={modalVisible}
+            record={record}
           />
-        </Card>
-        <CreateForm {...parentMethods} menuList={data.list} modalVisible={modalVisible} record={record} />
         </div>
       </PageHeaderWrapper>
-    )
+    );
   }
 }
 
-export default Form.create<TableListProps>()(Menu);
+export default Form.create<TableListProps>()(music);

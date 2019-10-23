@@ -1,40 +1,40 @@
-import { Form, Input, Modal, Radio, InputNumber, TreeSelect, Select, Icon } from 'antd';
+import { Form, Input, Modal, Upload, Button, Icon } from 'antd';
 
 import { FormComponentProps } from 'antd/es/form';
 import React, { Component } from 'react';
-import { arrayToJson } from '@/utils/index'
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 interface CreateFormProps extends FormComponentProps {
   modalVisible: boolean;
-  menuList: object[];
+  musicList: object[];
   handleAdd: (fieldsValue: { desc: string }) => void;
   handleModalVisible: () => void;
-  record: any
+  record: any;
 }
 
 export interface CreateFormState {
   radioType: string;
-  menuList: object[];
+  response: any;
+  musicList: object[];
 }
-class CreateForm extends Component<CreateFormProps, CreateFormState>{
+class CreateForm extends Component<CreateFormProps, CreateFormState> {
   constructor(props: CreateFormProps) {
     super(props);
 
     this.state = {
       radioType: 'b',
-      menuList: []
+      response: {},
+      musicList: [],
     };
   }
 
   okHandle = () => {
-    const { form, handleAdd, record={} } = this.props;
+    const { form, handleAdd, record = {} } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      handleAdd({...fieldsValue, menuId: record.menuId });
+      handleAdd({ ...fieldsValue, musicId: record.musicId, ...this.state.response });
     });
   };
   onChange = (value: any) => {
@@ -43,37 +43,26 @@ class CreateForm extends Component<CreateFormProps, CreateFormState>{
 
   onTypeChange = (e: any) => {
     this.setState({
-      radioType: e.target.value
-    })
+      radioType: e.target.value,
+    });
   };
-
+  normFile = (e: any) => {
+    if (e.file.status === 'done') {
+      const { response } = e.file;
+      this.setState({
+        response,
+      });
+    }
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  };
   render() {
-    const { modalVisible, form, handleModalVisible, menuList, record={} } = this.props;
-    console.log(record)
+    const { modalVisible, form, handleModalVisible, record = {} } = this.props;
+    console.log(record, this.state.response);
     // 一定要深拷贝 防止数组重复
-    const newMenuList = JSON.parse(JSON.stringify(menuList))
-    let treeData: any = []
-    if (modalVisible) {
-      treeData = [
-        {
-          title: '顶级菜单',
-          value: '0',
-          key: '0',
-          children: arrayToJson(newMenuList),
-        }
-      ];
-    }
 
-    let { radioType } = this.state
-    if (record.type) {
-      radioType = record.type
-    }
-    const formChange = {
-      a: { label: '目录名称', hasOrder: true, hasPerms: false, hasIcon: true, hasUrl: false },
-      b: { label: '菜单名称', hasOrder: true, hasPerms: true, hasIcon: true, hasUrl: true },
-      c: { label: '按钮名称', hasOrder: false, hasPerms: true, hasIcon: false, hasUrl: false },
-    }
-    console.log(formChange[radioType].label, radioType)
     return (
       <Modal
         destroyOnClose
@@ -82,97 +71,33 @@ class CreateForm extends Component<CreateFormProps, CreateFormState>{
         onOk={this.okHandle}
         onCancel={() => handleModalVisible()}
       >
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="菜单类型">
-          {form.getFieldDecorator('type', {
-            initialValue: record.type || 'a',
-            rules: [{ required: true, message: '请输入菜单类型！' }],
-          })(            
-            <Radio.Group onChange={this.onTypeChange}>
-              <Radio value="a">目录</Radio>
-              <Radio value="b">菜单</Radio>
-              <Radio value="c">按钮</Radio>
-            </Radio.Group>
-          )}
-        </FormItem>
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label={formChange[radioType].label}>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="音乐名称">
           {form.getFieldDecorator('name', {
             initialValue: record.name,
-            rules: [{ required: true, message: '请输入菜单名称！' }],
+            rules: [{ required: true, message: '请输入音乐名称！' }],
           })(<Input placeholder="请输入" />)}
         </FormItem>
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级菜单">
-          {form.getFieldDecorator('parentId', {
-            initialValue: record.parentId,
-            rules: [{ required: true, message: '请输入上级菜单！' }],
-          })(
-            <TreeSelect
-            style={{ width: '100%' }}
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={treeData}
-            placeholder="请选择"
-            treeDefaultExpandAll
-            onChange={this.onChange}
-          />
-          )}
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="创作者">
+          {form.getFieldDecorator('author', {
+            initialValue: record.author,
+            rules: [{ required: true, message: '请输入创作者！' }],
+          })(<Input placeholder="请输入" />)}
         </FormItem>
-        {
-          formChange[radioType].hasUrl ? (
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="菜单路由">
-            {form.getFieldDecorator('path', {
-              initialValue: record.path,
-              rules: [{ required: false, message: '请输入菜单路由！' }],
-            })(<Input placeholder="请输入" />)}
-          </FormItem>
-          ) : null
-        }
-
-        {
-          formChange[radioType].hasPerms ? (
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="授权标识">
-            {form.getFieldDecorator('perms', {
-              initialValue: record.perms,
-              rules: [{ required: false, message: '请选择授权标识！' }],
-            })(<Input placeholder="请输入" />)}
-          </FormItem>
-          ) : null
-        }
-
-        {
-          formChange[radioType].hasOrder ? (
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排序号">
-            {form.getFieldDecorator('orderNum', {
-              initialValue: record.orderNum,
-              rules: [{ required: false, message: '请选择排序号！' }],
-            })(<InputNumber style={{ width: '100%' }} min={1} max={10} />)}
-          </FormItem>
-          ) : null
-        }
-
-        {
-          formChange[radioType].hasIcon ? (
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="菜单图标">
-            {form.getFieldDecorator('icon', {
-              initialValue: record.icon,
-              rules: [{ required: false, message: '请选择菜单图标！' }],
-            })(
-              <Select
-                showSearch
-                style={{ width: '100%' }}
-                placeholder="请选择"
-                optionFilterProp="children"
-              >
-                <Option value="box-plot"><Icon type="box-plot" /></Option>
-                <Option value="radar-chart"><Icon type="radar-chart" /></Option>
-                <Option value="heat-map"><Icon type="heat-map" /></Option>
-              </Select>
-            )}
-          </FormItem>
-          ) : null
-        }
+        <Form.Item labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上传音乐">
+          {form.getFieldDecorator('upload', {
+            valuePropName: 'fileList',
+            getValueFromEvent: this.normFile,
+          })(
+            <Upload name="file" action="http://120.77.239.216:3000/api/upload" listType="picture">
+              <Button>
+                <Icon type="upload" /> 点击上传
+              </Button>
+            </Upload>,
+          )}
+        </Form.Item>
       </Modal>
     );
   }
-
-};
+}
 
 export default Form.create<CreateFormProps>()(CreateForm);

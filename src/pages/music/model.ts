@@ -1,3 +1,10 @@
+/*
+ * @Author: liruigang
+ * @Date: 2019-10-18 08:16:52
+ * @LastEditors: liruigang
+ * @LastEditTime: 2019-10-18 08:16:52
+ * @UI:
+ */
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
 import { queryMenu, addMenu, updateMenu, deleteMenu } from './service';
@@ -28,7 +35,7 @@ export interface ModelType {
 }
 
 const Model: ModelType = {
-  namespace: 'menu',
+  namespace: 'music',
 
   state: {
     data: {
@@ -39,7 +46,7 @@ const Model: ModelType = {
 
   effects: {
     *fetch({ payload, callback }, { call, put }) {
-      console.log('-----')
+      console.log('-----');
       const response = yield call(queryMenu, payload);
       yield put({
         type: 'save',
