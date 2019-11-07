@@ -88,7 +88,7 @@ class CreateForm extends Component<CreateFormProps, CreateFormState> {
             valuePropName: 'fileList',
             getValueFromEvent: this.normFile,
           })(
-            <Upload name="file" action="http://120.77.239.216:3000/api/upload" listType="picture">
+            <Upload name="file" action="http://localhost:3000/api/upload" listType="picture">
               <Button>
                 <Icon type="upload" /> 点击上传
               </Button>
